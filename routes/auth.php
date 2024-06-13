@@ -69,5 +69,10 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     Route::post('admin/logout', [Admin\Auth\AuthenticatedSessionController::class, 'destroy'])
                 ->name('admin.logout');
+
+    Route::get('admin/index',[Admin\UserController::class,'index'])->name('admin.users.index');
+
+    Route::get('admin/show/{num}', [Admin\UserController::class, 'show'])->name('admin.users.show');
 });
+
 
