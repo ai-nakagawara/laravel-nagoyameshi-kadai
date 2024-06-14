@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Admin\RestaurantController;
+use Illuminate\Queue\Console\RestartCommand;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest', 'guest:admin'])->group(function () {
@@ -73,6 +75,22 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('admin/index',[Admin\UserController::class,'index'])->name('admin.users.index');
 
     Route::get('admin/show/{num}', [Admin\UserController::class, 'show'])->name('admin.users.show');
+
+    Route::get('admin/restaurants/index', [Admin\RestaurantController::class, 'index'])->name('admin.restaurants.index');
+
+    Route::get('admin/restaurants/show/{restaurant}', [Admin\RestaurantController::class, 'show'])->name('admin.restaurants.show');
+
+    Route::get('admin/restaurants/create', [Admin\RestaurantController::class, 'create'])->name('admin.restaurants.create');
+
+    Route::post('admin/restaurants/store', [Admin\RestaurantController::class, 'store'])->name('admin.restaurants.store');
+
+    Route::get('admin/restaurants/{restaurant}/edit', [Admin\RestaurantController::class, 'edit'])->name('admin.restaurants.edit');
+
+    Route::patch('admin/restaurants/{restaurant}/update', [Admin\RestaurantController::class, 'update'])->name('admin.restaurants.update');
+
+    Route::delete('admin/restaurants/delete/{num}', [Admin\RestaurantController::class, 'destroy'])->name('admin.restaurants.destroy');
+
+    // Route::resource('restaurants', RestaurantController::class,)->only('store', 'update', 'destroy');
 });
 
 
