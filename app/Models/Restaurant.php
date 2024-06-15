@@ -21,4 +21,10 @@ class Restaurant extends Model
         'closing_time',
         'seating_capavity',
     ];
+
+    //1つの店舗は1つのカテゴリーに属する
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

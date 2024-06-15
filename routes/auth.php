@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\RestaurantController;
 use Illuminate\Queue\Console\RestartCommand;
 use Illuminate\Support\Facades\Route;
@@ -90,7 +91,7 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::delete('admin/restaurants/delete/{num}', [Admin\RestaurantController::class, 'destroy'])->name('admin.restaurants.destroy');
 
-    // Route::resource('restaurants', RestaurantController::class,)->only('store', 'update', 'destroy');
+    Route::resource('admin/categories', Admin\CategoryController::class,)->only(['index','store', 'update', 'destroy'])->names('admin.categories');
 });
 
 
