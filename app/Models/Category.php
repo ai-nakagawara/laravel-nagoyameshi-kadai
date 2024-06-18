@@ -9,6 +9,10 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+    ];
+
     //1つのカテゴリーは複数の店舗を作成できる
     public function restaurants()
     {

@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\User;
 use App\Models\Restaurant;
 use App\Models\Category;
+use App\Models\RegularHoliday;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ use Tests\TestCase;
 
 class RestaurantTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
     /**
      * indexアクション (店舗一覧ページ)
      * 未ログインのユーザーは管理者側の店舗一覧ページにアクセスできない
@@ -41,7 +42,7 @@ class RestaurantTest extends TestCase
         $user->postal_code = "123-4678";
         $user->address = "東京都";
         $user->phone_number = "080-0000-0000";
-        $user->save();
+        // $user->save();
 
         $response = $this->actingAs($user)->get(route('admin.restaurants.index'));
         $response->assertRedirect(route('admin.login'));
@@ -57,7 +58,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -106,11 +107,10 @@ class RestaurantTest extends TestCase
 
      public function test_admins_can_access_the_restaurant_details_page(): void
      {
-
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -118,8 +118,10 @@ class RestaurantTest extends TestCase
         ]);
 
         $restaurant = Restaurant::factory()->create();
+        $categoryIds = Category::factory()->create();
+        $regular_holiday = RegularHoliday::factory()->create();
 
-        $response = $this->get(route('admin.restaurants.show',[$restaurant]));
+        $response = $this->get(route('admin.restaurants.show',[$restaurant],compact('regular_holiday')));
         $response->assertOk();
      }
 
@@ -165,7 +167,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -221,7 +223,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -236,6 +238,9 @@ class RestaurantTest extends TestCase
             array_push($categoryIds, $category->id);
         }
 
+        $regularHolidays = RegularHoliday::factory()->create();
+        // $regularHolidayIds = $regularHolidays->id;
+
         // 送信データにcategory_idsパラメータを追加
         $restaurantData = [
             // 他の店舗データフィールドがここに入ります
@@ -247,8 +252,9 @@ class RestaurantTest extends TestCase
             'address' => 'テスト',
             'opening_time' => '10:00:00',
             'closing_time' => '20:00:00',
-            'seating_capacity' => 50
+            'seating_capacity' => 50,
             'category_ids' => $categoryIds,
+            'regular_holiday_ids' => $regularHolidays->id,
         ];
 
         // リクエストを送信
@@ -309,7 +315,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -367,7 +373,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -377,6 +383,14 @@ class RestaurantTest extends TestCase
         $restaurant = Restaurant::factory()->create();
 
         $response = $this->patch(route('admin.restaurants.update', [$restaurant->id]),[
+            'name' => 'テストレストラン',
+            'description' => 'テスト',
+            'lowest_price' => 1000,
+            'highest_price' => 5000,
+            'postal_code' => 1000000,
+            'address' => 'テスト',
+            'opening_time' => '10:00:00',
+            'closing_time' => '20:00:00',
             'seating_capacity' => 60
         ]);
         $response->assertRedirect(route('admin.restaurants.index'));
@@ -427,7 +441,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,

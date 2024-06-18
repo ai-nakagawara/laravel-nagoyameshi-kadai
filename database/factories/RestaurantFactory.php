@@ -28,7 +28,7 @@ class RestaurantFactory extends Factory
             'address' => 'テスト',
             'opening_time' => '10:00:00',
             'closing_time' => '20:00:00',
-            'seating_capacity' => 50
+            'seating_capacity' => 50,
         ];
     }
 }
