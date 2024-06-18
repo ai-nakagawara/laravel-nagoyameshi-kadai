@@ -14,4 +14,8 @@ class Category extends Model
     {
         return $this->hasMany(Restaurant::class);
     }
+
+    public function restaurant_ids() {
+        return $this->belongsToMany(Restaurant::class)->withTimestamps();
+    }
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Models\Admin;
 use App\Models\User;
 use App\Models\Restaurant;
+use App\Models\Category;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -108,6 +109,8 @@ class RestaurantTest extends TestCase
 
         $admin = new Admin();
         $admin->email = 'admin@example.com';
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -161,6 +164,8 @@ class RestaurantTest extends TestCase
 
         $admin = new Admin();
         $admin->email = 'admin@example.com';
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -215,15 +220,26 @@ class RestaurantTest extends TestCase
 
         $admin = new Admin();
         $admin->email = 'admin@example.com';
-
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
             'password' => 'nagoyameshi',
         ]);
 
-        $response = $this->post(route('admin.restaurants.create'),[
-            'name' => 'テスト',
+        $categoryIds = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $category = Category::create([
+                'name' => 'カテゴリ' . $i
+            ]);
+            array_push($categoryIds, $category->id);
+        }
+
+        // 送信データにcategory_idsパラメータを追加
+        $restaurantData = [
+            // 他の店舗データフィールドがここに入ります
+            'name' => 'テストレストラン',
             'description' => 'テスト',
             'lowest_price' => 1000,
             'highest_price' => 5000,
@@ -232,9 +248,25 @@ class RestaurantTest extends TestCase
             'opening_time' => '10:00:00',
             'closing_time' => '20:00:00',
             'seating_capacity' => 50
-        ])->post(route('admin.restaurants.store'));
+            'category_ids' => $categoryIds,
+        ];
+
+        // リクエストを送信
+        $response = $this->post(route('admin.restaurants.store'), $restaurantData);
+
+        // category_idsパラメータを削除して検証
+        unset($restaurantData['category_ids']);
+        $this->assertDatabaseHas('restaurants', $restaurantData);
+
+        // category_restaurantテーブルでの検証
+        foreach ($categoryIds as $categoryId) {
+            $this->assertDatabaseHas('category_restaurant', [
+                'category_id' => $categoryId,
+                // 'restaurant_id' は登録されたレストランのIDを設定
+            ]);
+        }
         $response->assertRedirect(route('admin.restaurants.index'));
-     }
+    }
 
      /**
      * editアクション(店舗編集ページ)
@@ -276,6 +308,8 @@ class RestaurantTest extends TestCase
      {
         $admin = new Admin();
         $admin->email = 'admin@example.com';
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -284,9 +318,8 @@ class RestaurantTest extends TestCase
 
         $restaurant = Restaurant::factory()->create();
 
-        $response = $this->post(route('admin.restaurants.edit',[$restaurant->id]));
-        $response->assertOk();
-        // $response->assertRedirect(route('admin.restaurants.index'));
+        $response = $this->get(route('admin.restaurants.edit',[$restaurant->id]));
+        $response->assertOK();
      }
 
      /**
@@ -297,7 +330,7 @@ class RestaurantTest extends TestCase
     {
         $restaurant = Restaurant::factory()->create();
 
-        $response = $this->get(route('admin.restaurants.update', [$restaurant->id]));
+        $response = $this->patch(route('admin.restaurants.update', [$restaurant->id]));
 
         $response->assertRedirect(route('admin.login'));
     }
@@ -319,7 +352,7 @@ class RestaurantTest extends TestCase
 
         $restaurant = Restaurant::factory()->create();
 
-        $response = $this->actingAs($user)->get(route('admin.restaurants.update', [$restaurant->id]));
+        $response = $this->actingAs($user)->patch(route('admin.restaurants.update', [$restaurant->id]));
         $response->assertRedirect(route('admin.login'));
     }
 
@@ -333,7 +366,8 @@ class RestaurantTest extends TestCase
 
         $admin = new Admin();
         $admin->email = 'admin@example.com';
-
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -341,11 +375,11 @@ class RestaurantTest extends TestCase
         ]);
 
         $restaurant = Restaurant::factory()->create();
-        $response = $this->post(route('admin.restaurants.update', [$restaurant->id]),[
+
+        $response = $this->patch(route('admin.restaurants.update', [$restaurant->id]),[
             'seating_capacity' => 60
         ]);
-        // $response->assertRedirect(route('admin.restaurants.index'));
-        $response->assertRedirect();
+        $response->assertRedirect(route('admin.restaurants.index'));
      }
 
       /**
@@ -356,7 +390,7 @@ class RestaurantTest extends TestCase
     {
         $restaurant = Restaurant::factory()->create();
 
-        $response = $this->get(route('admin.restaurants.destroy', [$restaurant->id]));
+        $response = $this->delete(route('admin.restaurants.destroy', [$restaurant->id]));
 
         $response->assertRedirect(route('admin.login'));
     }
@@ -378,7 +412,7 @@ class RestaurantTest extends TestCase
 
         $restaurant = Restaurant::factory()->create();
 
-        $response = $this->actingAs($user)->get(route('admin.restaurants.destroy', [$restaurant->id]));
+        $response = $this->actingAs($user)->delete(route('admin.restaurants.destroy', [$restaurant->id]));
         $response->assertRedirect(route('admin.login'));
     }
 
@@ -392,7 +426,8 @@ class RestaurantTest extends TestCase
 
         $admin = new Admin();
         $admin->email = 'admin@example.com';
-
+        $admin->password = Hash::make('nagoyameshi');
+        $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -400,7 +435,7 @@ class RestaurantTest extends TestCase
         ]);
 
         $restaurant = Restaurant::factory()->create();
-        $response = $this->post(route('admin.restaurants.destroy', [$restaurant->id]));
+        $response = $this->delete(route('admin.restaurants.destroy', [$restaurant->id]));
         $response->assertRedirect(route('admin.restaurants.index'));
      }
 }
