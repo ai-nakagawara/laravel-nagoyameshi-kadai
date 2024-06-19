@@ -92,6 +92,10 @@ Route::middleware('auth:admin')->group(function () {
     Route::delete('admin/restaurants/delete/{num}', [Admin\RestaurantController::class, 'destroy'])->name('admin.restaurants.destroy');
 
     Route::resource('admin/categories', Admin\CategoryController::class,)->only(['index','store', 'update', 'destroy'])->names('admin.categories');
+
+    Route::resource('admin/company', Admin\CompanyController::class)->only(['index','edit','update'])->names('admin.company');
+
+    Route::resource('admin/terms', Admin\TermController::class)->only('index', 'edit', 'update')->names('admin.terms');
 });
 
 
