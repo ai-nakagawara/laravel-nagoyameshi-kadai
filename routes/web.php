@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RestaurantController;
+use App\Models\Restaurant;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,8 +26,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin
 
 Route::group(['middleware' => 'guest:admin'], function() {
     Route::get('/', [HomeController::class, 'index'])->name('home');
-    // Route::get('user/index', [UserController::class, 'index'])->name('user.index');
-    // Route::get('user/edit', [UserController::class, 'edit'])->name('user.edit');
-    // Route::post('user/update', [UserController::class, 'update'])->name('user.update');
     Route::resource('user', UserController::class)->only(['index', 'edit', 'update'])->middleware(['auth', 'verified'])->names('user');
+    Route::resource('restaurants', RestaurantController::class)->only(['index'])->names('restaurants');
 });
