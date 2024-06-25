@@ -17,7 +17,7 @@ use Tests\TestCase;
 
 class RestaurantTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
     /**
      * indexアクション (店舗一覧ページ)
      * 未ログインのユーザーは管理者側の店舗一覧ページにアクセスできない
@@ -43,7 +43,7 @@ class RestaurantTest extends TestCase
         $user->postal_code = "123-4678";
         $user->address = "東京都";
         $user->phone_number = "080-0000-0000";
-        $user->save();
+        // $user->save();
 
         $response = $this->actingAs($user)->get(route('admin.restaurants.index'));
         $response->assertRedirect(route('admin.login'));
@@ -59,7 +59,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -111,7 +111,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -168,7 +168,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -224,7 +224,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -328,7 +328,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -386,7 +386,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
@@ -404,7 +404,7 @@ class RestaurantTest extends TestCase
         }
 
         $regularHolidayIds = [];
-        $regularHoliday = RegularHoliday::factory()->create();
+        $regularHoliday = RegularHolidayRestaurant::factory()->create();
         array_push($regularHolidayIds, $regularHoliday->id);
 
         $response = $this->patch(route('admin.restaurants.update', [$restaurant->id]),[
@@ -483,7 +483,7 @@ class RestaurantTest extends TestCase
         $admin = new Admin();
         $admin->email = 'admin@example.com';
         $admin->password = Hash::make('nagoyameshi');
-        $admin->save();
+        // $admin->save();
 
         $this->post(route('admin.login'), [
             'email' => $admin->email,
