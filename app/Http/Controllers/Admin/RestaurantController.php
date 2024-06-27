@@ -105,8 +105,9 @@ class RestaurantController extends Controller
         } else {
             $regular_holiday_ids = array_filter($request->input('regular_holiday_ids'));
         }
+        $restaurant->regular_holidays()->sync($regular_holiday_ids);
 
-        return redirect()->route('admin.restaurants.index', compact('restaurant'))->with('flash_message','店舗を登録しました。');
+        return redirect()->route('admin.restaurants.index', $restaurant)->with('flash_message','店舗を登録しました。');
     }
 
     public function edit($id) {
