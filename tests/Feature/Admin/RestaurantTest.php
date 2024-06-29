@@ -396,7 +396,7 @@ class RestaurantTest extends TestCase
         }
 
         $regularHolidayIds = [];
-        $regularHoliday = RegularHolidayRestaurant::factory()->create();
+        $regularHoliday = RegularHoliday::factory()->create();
         array_push($regularHolidayIds, $regularHoliday->id);
 
         $response = $this->patch(route('admin.restaurants.update', [$restaurant->id]),[
