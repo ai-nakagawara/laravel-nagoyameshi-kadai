@@ -3,12 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Middleware\Subscribed;
 use App\Http\Middleware\NotSubscribed;
+use App\Models\Reservation;
 use App\Models\Restaurant;
 
 /*
@@ -40,5 +42,7 @@ Route::group(['middleware' => 'guest:admin'], function() {
     Route::delete('subscription/destroy', [SubscriptionController::class, 'destroy'])->middleware(['auth', 'verified', 'not.subscribed'])->name('subscription.destroy');
     Route::resource('restaurants.reviews', ReviewController::class)->only(['index'])->middleware(['auth', 'verified'])->names('restaurants.reviews');
     Route::resource('restaurants.reviews', ReviewController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware(['auth', 'verified', 'not.subscribed'])->names('restaurants.reviews');
+    Route::resource('reservations', ReservationController::class)->only(['index', 'destroy'])->middleware(['auth', 'verified', 'not.subscribed'])->names('reservations');
+    Route::resource('restaurants.reservations', ReservationController::class)->only(['create', 'store'])->middleware(['auth', 'verified', 'not.subscribed'])->names('restaurants.reservations');
 
 });
