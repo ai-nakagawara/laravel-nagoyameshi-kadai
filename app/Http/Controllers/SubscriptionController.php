@@ -52,8 +52,6 @@ class SubscriptionController extends Controller
     {
         $user = Auth::user()->subscription('premium_plan')->cancelNow();
 
-        $user->delete();
-
         return redirect()->route('home',compact('user'))->with('flash_message', '有料プランを解約しました。');
     }
 }
