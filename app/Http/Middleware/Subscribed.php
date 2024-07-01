@@ -15,7 +15,7 @@ class Subscribed
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()?->subscribed('premium_plan')) {
+        if (! $request->user()?->subscribed('premium_plan')) {
             // ユーザーを支払いページへリダイレクトし、サブスクリプションを購入するか尋ねる
             return redirect('subscription/create');
         }
