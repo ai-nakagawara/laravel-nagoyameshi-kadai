@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin;
-
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RestaurantController;
@@ -10,6 +10,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\TermController;
 use App\Http\Middleware\Subscribed;
 use App\Http\Middleware\NotSubscribed;
 use App\Models\Reservation;
@@ -49,5 +50,6 @@ Route::group(['middleware' => 'guest:admin'], function() {
     Route::get('favorites', [FavoriteController::class, 'index'])->middleware(['auth', 'verified', 'subscribed'])->name('favorites.index');
     Route::post('favorites/{restaurant}', [FavoriteController::class, 'store'])->middleware(['auth', 'verified', 'subscribed'])->name('favorites.store');
     Route::delete('favorites/{restaurant}', [FavoriteController::class, 'destroy'])->middleware(['auth', 'verified', 'subscribed'])->name('favorites.destroy');
-
+    Route::get('company', [CompanyController::class, 'index'])->name('company.index');
+    ROute::get('terms', [TermController::class, 'index'])->name('terms.index');
 });
