@@ -9,10 +9,11 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Laravel\Cashier\Billable;
+use Kyslik\ColumnSortable\Sortable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, Billable;
+    use HasApiTokens, HasFactory, Notifiable, Billable, Sortable;
 
     /**
      * The attributes that are mass assignable.
@@ -57,5 +58,9 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function reservations(){
         return $this->hasMany(Review::class);
+    }
+
+    public function favorite_restaurants() {
+        return $this->belongsToMany(Restaurant::class)->withTimestamps();
     }
 }

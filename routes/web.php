@@ -46,6 +46,8 @@ Route::group(['middleware' => 'guest:admin'], function() {
     Route::resource('restaurants.reviews', ReviewController::class)->only(['create', 'store', 'edit', 'update', 'destroy'])->middleware(['auth', 'verified', 'subscribed'])->names('restaurants.reviews');
     Route::resource('reservations', ReservationController::class)->only(['index', 'destroy'])->middleware(['auth', 'verified', 'subscribed'])->names('reservations');
     Route::resource('restaurants.reservations', ReservationController::class)->only(['create', 'store'])->middleware(['auth', 'verified', 'subscribed'])->names('restaurants.reservations');
-    Route::resource('favorites', FavoriteController::class)->only(['index', 'store', 'destroy'])->middleware(['auth', 'varified', 'not.subscribed'])->names('favorites');
+    Route::get('favorites', [FavoriteController::class, 'index'])->middleware(['auth', 'verified', 'subscribed'])->name('favorites.index');
+    Route::post('favorites/{restaurant}', [FavoriteController::class, 'store'])->middleware(['auth', 'verified', 'subscribed'])->name('favorites.store');
+    Route::delete('favorites/{restaurant}', [FavoriteController::class, 'destroy'])->middleware(['auth', 'verified', 'subscribed'])->name('favorites.destroy');
 
 });

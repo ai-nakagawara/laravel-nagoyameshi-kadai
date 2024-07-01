@@ -53,4 +53,8 @@ class Restaurant extends Model
         return $query->withCount('reservations')->orderBy('reservations_count', $direction);
     }
 
+    public function favorited_users() {
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
+
 }
